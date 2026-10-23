@@ -20,6 +20,21 @@
 
   <script>
     const software = {
+      "micrase-assault": {
+        name: "Micrase's Assault",
+        icon: "softicon_Micrase_Assault_game.webp",
+        platforms: ["Linux"],
+        comingSoon: ["macOS", "Android", "Windows"],
+        downloads: {
+          Linux: {
+            note: "Alpha release: expect game-breaking bugs and glitches.",
+            latest: {
+              label: "Linux (AppImage)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-x86_64.AppImage"
+            }
+          }
+        }
+      },
       "touch-grass": {
         name: "Touch Grass",
         icon: "softicon_touchgrass.webp",
@@ -101,6 +116,7 @@
       detail.innerHTML = '<a class="back-link" href="index.html">&larr; All software</a><section class="detail-panel not-found">Software not found.</section>';
     } else {
       document.title = `${selectedSoftware.name} | Micrase's softwares`;
+      const initialPlatform = selectedSoftware.platforms[0];
       detail.innerHTML = `
         <a class="back-link" href="index.html">&larr; All software</a>
         <section class="detail-panel" aria-labelledby="software-name">
@@ -109,9 +125,9 @@
             <div><h1 id="software-name">${selectedSoftware.name}</h1><p>Choose a platform</p></div>
           </div>
           <div class="platform-tabs" role="tablist" aria-label="Available platforms">
-            ${["Android", "Linux", "macOS", "Windows"].map((platform, index) => `<button class="platform-tab" id="tab-${index}" type="button" role="tab" aria-selected="${index === 0}" aria-controls="platform-content" tabindex="${index === 0 ? 0 : -1}" data-platform="${platform}">${platform}</button>`).join("")}
+            ${["Android", "Linux", "macOS", "Windows"].map((platform, index) => `<button class="platform-tab" id="tab-${index}" type="button" role="tab" aria-selected="${platform === initialPlatform}" aria-controls="platform-content" tabindex="${platform === initialPlatform ? 0 : -1}" data-platform="${platform}">${platform}</button>`).join("")}
           </div>
-          <div class="platform-content" id="platform-content" role="tabpanel" aria-labelledby="tab-0"></div>
+          <div class="platform-content" id="platform-content" role="tabpanel" aria-labelledby="tab-${["Android", "Linux", "macOS", "Windows"].indexOf(initialPlatform)}"></div>
         </section>`;
 
       const tabs = [...detail.querySelectorAll("[role='tab']")];
@@ -132,7 +148,8 @@
           const legacyLinks = releases.legacy?.length
             ? `<details class="legacy-dropdown"><summary>Legacy releases</summary><div class="legacy-options">${releases.legacy.map(release => `<a href="${release.url}">${release.label}</a>`).join("")}</div></details>`
             : "";
-          content.innerHTML = `<h2>Available for ${platform}</h2><div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${legacyLinks}</div>`;
+          const releaseNote = releases.note ? `<p class="release-note">${releases.note}</p>` : "";
+          content.innerHTML = `<h2>Available for ${platform}</h2>${releaseNote}<div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${legacyLinks}</div>`;
         } else {
           content.innerHTML = available
             ? `<h2>Available for ${platform}</h2><p>Downloads for this platform have not been added yet.</p>`
@@ -151,7 +168,7 @@
           selectPlatform(nextTab);
         });
       });
-      selectPlatform(tabs[0]);
+      selectPlatform(tabs.find(tab => tab.dataset.platform === initialPlatform));
     }
   </script>
 </body>

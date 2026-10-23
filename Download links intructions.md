@@ -1,5 +1,9 @@
 Download links instructions:
 
+**Micrase's Assault (Linux only)**
+--Latest release--
+https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-x86_64.AppImage
+
 **Pigeon weather (android only)**
 --Latest release--
 https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/meteo-pigeon-app-release-1.0.1.apk
