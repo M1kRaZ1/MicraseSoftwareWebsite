@@ -20,6 +20,7 @@ a { color: inherit; }
 .header-note { color: #deeff8; font-size: 12px; }
 main { min-height: calc(100vh - 120px); padding: 28px 0 42px; }
 h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman", serif; }
+.software-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; align-items: start; gap: 18px; }
 .software-list { overflow: hidden; border: 1px solid #ccd6dd; border-radius: 3px; background: #fff; }
 .software-item { display: flex; min-height: 75px; align-items: center; gap: 13px; padding: 12px; text-decoration: none; }
 .software-item + .software-item { border-top: 1px solid #e1e6ea; }
@@ -32,6 +33,9 @@ h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman
 .software-copy strong { color: #286c9b; font: bold 16px Georgia, "Times New Roman", serif; }
 .software-copy > span { color: #74818b; font-size: 11px; line-height: 1.4; }
 .item-arrow { margin-left: auto; color: #7b9bb0; font: 24px Georgia, serif; }
+.advertisement { overflow: hidden; border: 1px solid #ccd6dd; border-radius: 3px; background: #fff; }
+.ad-label { display: block; padding: 7px 10px; color: #536c7c; background: #fff; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+.advertisement img { display: block; width: 100%; height: auto; background: #fff; }
 .site-footer { padding: 14px 0 20px; border-top: 1px solid #d5dde2; color: #87929a; font-size: 10px; }
 .device-notice { width: min(380px, calc(100% - 32px)); padding: 19px; border: 1px solid #b9cbd6; border-radius: 4px; color: #263746; box-shadow: 0 8px 28px #172a3a40; }
 .device-notice::backdrop { background: #172a3a80; }
@@ -68,6 +72,7 @@ h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman
   .brand { font-size: 19px; }
   .header-note { font-size: 10px; }
   main { padding-top: 22px; }
+  .software-layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .software-item { gap: 10px; padding: 11px; }
   .software-copy strong { font-size: 15px; }
 }
