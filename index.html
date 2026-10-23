@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Micrase's softwares</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html">Micrase's softwares</a>
+      <span class="header-note">Software by Micrase</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Software</h1>
+    <div class="software-list" aria-label="Available software">
+      <a class="software-item" href="software.html?software=nathan-boloss" data-platforms="android linux macos">
+        <span class="software-icon icon-nathan" aria-hidden="true">NB</span>
+        <span class="software-copy">
+          <strong>Nathan Boloss</strong>
+          <span>Android · Linux · macOS</span>
+        </span>
+        <span class="item-arrow" aria-hidden="true">›</span>
+      </a>
+      <a class="software-item" href="software.html?software=touch-grass" data-platforms="android macos">
+        <span class="software-icon icon-grass" aria-hidden="true">TG</span>
+        <span class="software-copy">
+          <strong>Touch Grass</strong>
+          <span>Android · macOS</span>
+        </span>
+        <span class="item-arrow" aria-hidden="true">›</span>
+      </a>
+      <a class="software-item" href="software.html?software=so-tuff" data-platforms="android">
+        <span class="software-icon icon-tuff" aria-hidden="true">ST</span>
+        <span class="software-copy">
+          <strong>So Tuff</strong>
+          <span>Android · macOS and Linux support coming soon</span>
+        </span>
+        <span class="item-arrow" aria-hidden="true">›</span>
+      </a>
+    </div>
+  </main>
+
+  <footer class="wrap site-footer">© Micrase</footer>
+
+  <dialog class="device-notice" id="ios-notice" aria-labelledby="ios-notice-title">
+    <h2 id="ios-notice-title">Not available for iPhone</h2>
+    <p>None of the software here is currently available for Apple iPhones.</p>
+    <form method="dialog"><button type="submit">Got it</button></form>
+  </dialog>
+
+  <script>
+    const userAgent = navigator.userAgent;
+    const softwareList = document.querySelector(".software-list");
+
+    if (/iPhone|iPad|iPod/i.test(userAgent)) {
+      document.querySelector("#ios-notice").showModal();
+    }
+
+    if (/Android/i.test(userAgent)) {
+      const items = [...softwareList.querySelectorAll(".software-item")];
+      items.sort((first, second) => {
+        const firstSupportsAndroid = first.dataset.platforms.split(" ").includes("android");
+        const secondSupportsAndroid = second.dataset.platforms.split(" ").includes("android");
+        return Number(secondSupportsAndroid) - Number(firstSupportsAndroid);
+      });
+      items.forEach(item => softwareList.append(item));
+    }
+  </script>
+</body>
+</html>

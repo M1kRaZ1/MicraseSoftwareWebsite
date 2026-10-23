@@ -1,0 +1,64 @@
+:root {
+  font-family: "Trebuchet MS", "Lucida Grande", sans-serif;
+  color: #263746;
+  background: #f1f3f5;
+}
+
+* { box-sizing: border-box; }
+body { min-width: 320px; margin: 0; }
+a { color: inherit; }
+.wrap { width: min(760px, calc(100% - 32px)); margin: 0 auto; }
+
+.site-header {
+  border-bottom: 1px solid #174f78;
+  background: linear-gradient(#3788ba, #246b9a);
+  box-shadow: inset 0 1px #8dc4e1;
+  color: white;
+}
+.header-inner { display: flex; min-height: 66px; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { color: white; font: bold 23px Georgia, "Times New Roman", serif; text-decoration: none; text-shadow: 0 1px #164b70; }
+.header-note { color: #deeff8; font-size: 12px; }
+main { min-height: calc(100vh - 120px); padding: 28px 0 42px; }
+h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman", serif; }
+.software-list { overflow: hidden; border: 1px solid #ccd6dd; border-radius: 3px; background: #fff; }
+.software-item { display: flex; min-height: 75px; align-items: center; gap: 13px; padding: 12px; text-decoration: none; }
+.software-item + .software-item { border-top: 1px solid #e1e6ea; }
+.software-item:hover, .software-item:focus-visible { background: #f2f8fb; }
+.software-icon { display: grid; width: 44px; height: 44px; flex: 0 0 44px; place-items: center; border: 1px solid #b7c8d4; border-radius: 7px; color: white; background: linear-gradient(145deg, #78add0, #286c9b); box-shadow: inset 0 1px #ffffff80; font: bold 14px Georgia, serif; }
+.icon-grass { background: linear-gradient(145deg, #9fcf6d, #568b38); border-color: #b5c99c; }
+.icon-tuff { background: linear-gradient(145deg, #e5a166, #bb592e); border-color: #d5b29b; }
+.software-copy { display: grid; min-width: 0; gap: 4px; }
+.software-copy strong { color: #286c9b; font: bold 16px Georgia, "Times New Roman", serif; }
+.software-copy > span { color: #74818b; font-size: 11px; line-height: 1.4; }
+.item-arrow { margin-left: auto; color: #7b9bb0; font: 24px Georgia, serif; }
+.site-footer { padding: 14px 0 20px; border-top: 1px solid #d5dde2; color: #87929a; font-size: 10px; }
+.device-notice { width: min(380px, calc(100% - 32px)); padding: 19px; border: 1px solid #b9cbd6; border-radius: 4px; color: #263746; box-shadow: 0 8px 28px #172a3a40; }
+.device-notice::backdrop { background: #172a3a80; }
+.device-notice h2 { margin: 0 0 8px; color: #31536b; font: bold 19px Georgia, "Times New Roman", serif; }
+.device-notice p { margin: 0 0 16px; color: #687781; font-size: 13px; line-height: 1.5; }
+.device-notice form { display: flex; justify-content: flex-end; }
+.device-notice button { padding: 7px 12px; border: 1px solid #1e5d88; border-radius: 3px; color: white; background: linear-gradient(#3788ba, #246b9a); font-weight: bold; }
+
+.back-link { display: inline-block; margin-bottom: 16px; color: #34769d; font-size: 12px; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+.detail-panel { overflow: hidden; border: 1px solid #ccd6dd; border-radius: 3px; background: #fff; }
+.detail-heading { display: flex; align-items: center; gap: 13px; padding: 17px; border-bottom: 1px solid #d8e0e5; background: linear-gradient(#fff, #f6f8f9); }
+.detail-heading h1 { margin: 0; }
+.detail-heading p { margin: 5px 0 0; color: #74818b; font-size: 11px; }
+.platform-tabs { display: flex; gap: 3px; padding: 12px 14px 0; border-bottom: 1px solid #cbd7df; background: #f2f5f7; }
+.platform-tab { padding: 8px 13px; border: 1px solid transparent; border-bottom: 0; border-radius: 3px 3px 0 0; color: #536c7c; background: transparent; font-size: 12px; cursor: pointer; }
+.platform-tab[aria-selected="true"] { position: relative; top: 1px; border-color: #cbd7df; color: #245c80; background: white; font-weight: bold; }
+.platform-content { min-height: 106px; padding: 19px 17px; }
+.platform-content h2 { margin: 0 0 8px; color: #365b75; font: bold 16px Georgia, "Times New Roman", serif; }
+.platform-content p { margin: 0; color: #687781; font-size: 12px; line-height: 1.55; }
+.not-found { padding: 18px; color: #657783; font-size: 13px; }
+
+@media (max-width: 480px) {
+  .wrap { width: calc(100% - 24px); }
+  .header-inner { min-height: 60px; }
+  .brand { font-size: 19px; }
+  .header-note { font-size: 10px; }
+  main { padding-top: 22px; }
+  .software-item { gap: 10px; padding: 11px; }
+  .software-copy strong { font-size: 15px; }
+}

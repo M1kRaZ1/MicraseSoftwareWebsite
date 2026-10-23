@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Software | Micrase's softwares</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html">Micrase's softwares</a>
+      <span class="header-note">Software by Micrase</span>
+    </div>
+  </header>
+
+  <main class="wrap" id="software-detail" aria-live="polite"></main>
+
+  <footer class="wrap site-footer">© Micrase</footer>
+
+  <script>
+    const software = {
+      "nathan-boloss": {
+        name: "Nathan Boloss",
+        platforms: ["Android", "Linux", "macOS"]
+      },
+      "touch-grass": {
+        name: "Touch Grass",
+        platforms: ["Android", "macOS"]
+      },
+      "so-tuff": {
+        name: "So Tuff",
+        platforms: ["Android"],
+        comingSoon: ["Linux", "macOS"]
+      }
+    };
+
+    const requestedSoftware = new URLSearchParams(window.location.search).get("software");
+    const selectedSoftware = software[requestedSoftware];
+    const detail = document.querySelector("#software-detail");
+
+    if (!selectedSoftware) {
+      document.title = "Software not found | Micrase's softwares";
+      detail.innerHTML = '<a class="back-link" href="index.html">&larr; All software</a><section class="detail-panel not-found">Software not found.</section>';
+    } else {
+      document.title = `${selectedSoftware.name} | Micrase's softwares`;
+      detail.innerHTML = `
+        <a class="back-link" href="index.html">&larr; All software</a>
+        <section class="detail-panel" aria-labelledby="software-name">
+          <div class="detail-heading">
+            <span class="software-icon" aria-hidden="true">${selectedSoftware.name.split(" ").map(word => word[0]).join("").slice(0, 2)}</span>
+            <div><h1 id="software-name">${selectedSoftware.name}</h1><p>Choose a platform</p></div>
+          </div>
+          <div class="platform-tabs" role="tablist" aria-label="Available platforms">
+            ${["Android", "Linux", "macOS"].map((platform, index) => `<button class="platform-tab" id="tab-${index}" type="button" role="tab" aria-selected="${index === 0}" aria-controls="platform-content" tabindex="${index === 0 ? 0 : -1}" data-platform="${platform}">${platform}</button>`).join("")}
+          </div>
+          <div class="platform-content" id="platform-content" role="tabpanel" aria-labelledby="tab-0"></div>
+        </section>`;
+
+      const tabs = [...detail.querySelectorAll("[role='tab']")];
+      const content = detail.querySelector("[role='tabpanel']");
+
+      function selectPlatform(tab) {
+        const platform = tab.dataset.platform;
+        const available = selectedSoftware.platforms.includes(platform);
+        const comingSoon = selectedSoftware.comingSoon?.includes(platform);
+        tabs.forEach(item => {
+          const active = item === tab;
+          item.setAttribute("aria-selected", String(active));
+          item.tabIndex = active ? 0 : -1;
+        });
+        content.setAttribute("aria-labelledby", tab.id);
+        content.innerHTML = available
+          ? `<h2>Available for ${platform}</h2><p>Downloads for this platform have not been added yet.</p>`
+          : `<h2>${comingSoon ? `${platform} support coming soon` : `Not available for ${platform}`}</h2><p>${comingSoon ? `Support for ${platform} is coming soon.` : `${selectedSoftware.name} is not currently available for ${platform}.`}</p>`;
+      }
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => selectPlatform(tab));
+        tab.addEventListener("keydown", event => {
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+          event.preventDefault();
+          const direction = event.key === "ArrowRight" ? 1 : -1;
+          const nextTab = tabs[(index + direction + tabs.length) % tabs.length];
+          nextTab.focus();
+          selectPlatform(nextTab);
+        });
+      });
+      selectPlatform(tabs[0]);
+    }
+  </script>
+</body>
+</html>
