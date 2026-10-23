@@ -25,6 +25,7 @@ h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman
 .software-item + .software-item { border-top: 1px solid #e1e6ea; }
 .software-item:hover, .software-item:focus-visible { background: #f2f8fb; }
 .software-icon { display: grid; width: 44px; height: 44px; flex: 0 0 44px; place-items: center; border: 1px solid #b7c8d4; border-radius: 7px; color: white; background: linear-gradient(145deg, #78add0, #286c9b); box-shadow: inset 0 1px #ffffff80; font: bold 14px Georgia, serif; }
+.software-icon.app-icon { object-fit: cover; image-rendering: pixelated; }
 .icon-grass { background: linear-gradient(145deg, #9fcf6d, #568b38); border-color: #b5c99c; }
 .icon-tuff { background: linear-gradient(145deg, #e5a166, #bb592e); border-color: #d5b29b; }
 .software-copy { display: grid; min-width: 0; gap: 4px; }
@@ -51,6 +52,14 @@ h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman
 .platform-content { min-height: 106px; padding: 19px 17px; }
 .platform-content h2 { margin: 0 0 8px; color: #365b75; font: bold 16px Georgia, "Times New Roman", serif; }
 .platform-content p { margin: 0; color: #687781; font-size: 12px; line-height: 1.55; }
+.download-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 11px; }
+.download-link { display: inline-block; padding: 8px 11px; border: 1px solid #1e5d88; border-radius: 3px; color: white; background: linear-gradient(#3788ba, #246b9a); font-size: 12px; font-weight: bold; text-decoration: none; }
+.download-link:hover { background: linear-gradient(#4396c8, #2d78a8); }
+.legacy-dropdown { color: #34769d; font-size: 12px; }
+.legacy-dropdown summary { cursor: pointer; }
+.legacy-options { display: grid; gap: 7px; margin-top: 8px; padding: 9px; border: 1px solid #d5dfe5; border-radius: 3px; background: #f7f9fa; }
+.legacy-options a { color: #34769d; text-decoration: none; }
+.legacy-options a:hover { text-decoration: underline; }
 .not-found { padding: 18px; color: #657783; font-size: 13px; }
 
 @media (max-width: 480px) {

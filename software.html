@@ -10,7 +10,7 @@
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="brand" href="index.html">Micrase's softwares</a>
-      <span class="header-note">Software by Micrase</span>
+      <span class="header-note">Software by Micrase1</span>
     </div>
   </header>
 
@@ -20,22 +20,69 @@
 
   <script>
     const software = {
-      "nathan-boloss": {
-        name: "Nathan Boloss",
-        platforms: ["Android", "Linux", "macOS"]
-      },
       "touch-grass": {
         name: "Touch Grass",
-        platforms: ["Android", "macOS"]
+        icon: "softicon_touchgrass.webp",
+        platforms: ["Android", "macOS"],
+        downloads: {
+          Android: {
+            latest: {
+              label: "Version 1.1 (APK)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Touch-grass_v1.1.apk"
+            },
+            legacy: [{
+              label: "Version 1.0 (APK)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Touch_grass-V1.0.apk"
+            }]
+          },
+          macOS: {
+            latest: {
+              label: "Intel & Apple silicon (DMG)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Touch-Grass_Intel.AppleSilicon.dmg"
+            }
+          }
+        }
       },
       "so-tuff": {
         name: "So Tuff",
-        platforms: ["Android"],
-        comingSoon: ["Linux", "macOS"]
+        icon: "softicon_sotuff.webp",
+        platforms: ["Android", "Windows"],
+        comingSoon: ["Linux", "macOS"],
+        downloads: {
+          Android: {
+            latest: {
+              label: "Version 1.1 (APK)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/SO-TUFF-1.1.apk"
+            },
+            legacy: [{
+              label: "Legacy release (APK)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/So-Tuff.apk"
+            }]
+          },
+          Windows: {
+            latest: {
+              label: "Windows (ZIP)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/So-Tuff-win-x64.zip"
+            }
+          }
+        }
       },
       "pigeon-weather": {
         name: "Pigeon Weather",
-        platforms: ["Android"]
+        icon: "softicon_pigeonweather.webp",
+        platforms: ["Android"],
+        downloads: {
+          Android: {
+            latest: {
+              label: "Version 1.0.1 (APK)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/meteo-pigeon-app-release-1.0.1.apk"
+            },
+            legacy: [{
+              label: "Version 1.0 (APK)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/meteo-pigeon-app-release-1.0.apk"
+            }]
+          }
+        }
       }
     };
 
@@ -52,7 +99,7 @@
         <a class="back-link" href="index.html">&larr; All software</a>
         <section class="detail-panel" aria-labelledby="software-name">
           <div class="detail-heading">
-            <span class="software-icon" aria-hidden="true">${selectedSoftware.name.split(" ").map(word => word[0]).join("").slice(0, 2)}</span>
+            <img class="software-icon app-icon" src="${selectedSoftware.icon}" alt="" aria-hidden="true">
             <div><h1 id="software-name">${selectedSoftware.name}</h1><p>Choose a platform</p></div>
           </div>
           <div class="platform-tabs" role="tablist" aria-label="Available platforms">
@@ -68,15 +115,23 @@
         const platform = tab.dataset.platform;
         const available = selectedSoftware.platforms.includes(platform);
         const comingSoon = selectedSoftware.comingSoon?.includes(platform);
+        const releases = selectedSoftware.downloads?.[platform];
         tabs.forEach(item => {
           const active = item === tab;
           item.setAttribute("aria-selected", String(active));
           item.tabIndex = active ? 0 : -1;
         });
         content.setAttribute("aria-labelledby", tab.id);
-        content.innerHTML = available
-          ? `<h2>Available for ${platform}</h2><p>Downloads for this platform have not been added yet.</p>`
-          : `<h2>${comingSoon ? `${platform} support coming soon` : `Not available for ${platform}`}</h2><p>${comingSoon ? `Support for ${platform} is coming soon.` : `${selectedSoftware.name} is not currently available for ${platform}.`}</p>`;
+        if (available && releases) {
+          const legacyLinks = releases.legacy?.length
+            ? `<details class="legacy-dropdown"><summary>Legacy releases</summary><div class="legacy-options">${releases.legacy.map(release => `<a href="${release.url}">${release.label}</a>`).join("")}</div></details>`
+            : "";
+          content.innerHTML = `<h2>Available for ${platform}</h2><div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${legacyLinks}</div>`;
+        } else {
+          content.innerHTML = available
+            ? `<h2>Available for ${platform}</h2><p>Downloads for this platform have not been added yet.</p>`
+            : `<h2>${comingSoon ? `${platform} support coming soon` : `Not available for ${platform}`}</h2><p>${comingSoon ? `Support for ${platform} is coming soon.` : `${selectedSoftware.name} is not currently available for ${platform}.`}</p>`;
+        }
       }
 
       tabs.forEach((tab, index) => {
