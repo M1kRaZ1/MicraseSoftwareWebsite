@@ -56,7 +56,7 @@
             <div><h1 id="software-name">${selectedSoftware.name}</h1><p>Choose a platform</p></div>
           </div>
           <div class="platform-tabs" role="tablist" aria-label="Available platforms">
-            ${["Android", "Linux", "macOS"].map((platform, index) => `<button class="platform-tab" id="tab-${index}" type="button" role="tab" aria-selected="${index === 0}" aria-controls="platform-content" tabindex="${index === 0 ? 0 : -1}" data-platform="${platform}">${platform}</button>`).join("")}
+            ${["Android", "Linux", "macOS", "Windows"].map((platform, index) => `<button class="platform-tab" id="tab-${index}" type="button" role="tab" aria-selected="${index === 0}" aria-controls="platform-content" tabindex="${index === 0 ? 0 : -1}" data-platform="${platform}">${platform}</button>`).join("")}
           </div>
           <div class="platform-content" id="platform-content" role="tabpanel" aria-labelledby="tab-0"></div>
         </section>`;
