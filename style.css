@@ -21,6 +21,8 @@ a { color: inherit; }
 main { min-height: calc(100vh - 120px); padding: 28px 0 42px; }
 h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman", serif; }
 .software-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; align-items: start; gap: 18px; }
+.software-categories { display: grid; gap: 20px; }
+.software-category h2 { margin: 0 0 8px; color: #365b75; font: bold 17px Georgia, "Times New Roman", serif; }
 .software-list { overflow: hidden; border: 1px solid #ccd6dd; border-radius: 3px; background: #fff; }
 .software-item { display: flex; min-height: 75px; align-items: center; gap: 13px; padding: 12px; text-decoration: none; }
 .software-item + .software-item { border-top: 1px solid #e1e6ea; }
