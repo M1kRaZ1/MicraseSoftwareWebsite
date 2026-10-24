@@ -59,6 +59,12 @@ h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman
 .platform-content h2 { margin: 0 0 8px; color: #365b75; font: bold 16px Georgia, "Times New Roman", serif; }
 .platform-content p { margin: 0; color: #687781; font-size: 12px; line-height: 1.55; }
 .platform-content .release-note { margin-bottom: 12px; color: #b42318; font-weight: bold; }
+.system-requirements { margin-top: 16px; padding: 17px; }
+.system-requirements h2 { margin: 0 0 10px; color: #365b75; font: bold 16px Georgia, "Times New Roman", serif; }
+.system-requirements h3 { margin: 0 0 8px; color: #536c7c; font: bold 13px Georgia, "Times New Roman", serif; }
+.system-requirements p, .system-requirements li { color: #687781; font-size: 12px; line-height: 1.55; }
+.system-requirements .requirements-note { margin: 0 0 8px; }
+.system-requirements ul { display: grid; gap: 6px; margin: 0; padding-left: 19px; }
 .download-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 11px; }
 .download-link { display: inline-block; padding: 8px 11px; border: 1px solid #1e5d88; border-radius: 3px; color: white; background: linear-gradient(#3788ba, #246b9a); font-size: 12px; font-weight: bold; text-decoration: none; }
 .download-link:hover { background: linear-gradient(#4396c8, #2d78a8); }

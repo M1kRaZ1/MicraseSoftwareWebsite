@@ -25,6 +25,30 @@
         icon: "softicon_Micrase_Assault_game.webp",
         platforms: ["Linux", "macOS"],
         comingSoon: ["Windows"],
+        systemRequirements: {
+          Linux: {
+            items: [
+              "Operating system: a modern 64-bit Linux distribution.",
+              "Processor: a 64-bit x86 CPU that supports x86-64-v2. Not every 64-bit processor meets this requirement.",
+              "Graphics: a graphics card or chip that supports OpenGL 2.0."
+            ]
+          },
+          macOS: {
+            items: [
+              "Operating system: macOS 12 Monterey or later.",
+              "Processor: an Intel processor or an Apple M-series chip.",
+              "Graphics: a graphics card or chip that supports OpenGL 2.0."
+            ]
+          },
+          Windows: {
+            note: "Windows support is planned; these are the current minimum requirements.",
+            items: [
+              "Operating system: Windows 7 or later.",
+              "Processor: a 64-bit x86 CPU that supports x86-64-v2. Not every 64-bit processor meets this requirement.",
+              "Graphics: a graphics card or chip that supports OpenGL 2.0."
+            ]
+          }
+        },
         downloads: {
           Linux: {
             note: "Alpha release: expect game-breaking bugs and glitches.",
@@ -141,9 +165,17 @@
           </div>
           <div class="platform-content" id="platform-content" role="tabpanel" aria-labelledby="tab-${["Android", "Linux", "macOS", "Windows"].indexOf(initialPlatform)}"></div>
         </section>`;
+      if (selectedSoftware.systemRequirements) {
+        detail.insertAdjacentHTML("beforeend", `
+          <section class="detail-panel system-requirements" aria-labelledby="requirements-heading">
+            <h2 id="requirements-heading">System requirements</h2>
+            <div id="requirements-content" aria-live="polite"></div>
+          </section>`);
+      }
 
       const tabs = [...detail.querySelectorAll("[role='tab']")];
       const content = detail.querySelector("[role='tabpanel']");
+      const requirementsContent = detail.querySelector("#requirements-content");
 
       function selectPlatform(tab) {
         const platform = tab.dataset.platform;
@@ -156,6 +188,12 @@
           item.tabIndex = active ? 0 : -1;
         });
         content.setAttribute("aria-labelledby", tab.id);
+        if (requirementsContent) {
+          const requirements = selectedSoftware.systemRequirements[platform];
+          requirementsContent.innerHTML = requirements
+            ? `<h3>${platform}</h3>${requirements.note ? `<p class="requirements-note">${requirements.note}</p>` : ""}<ul>${requirements.items.map(item => `<li>${item}</li>`).join("")}</ul>`
+            : `<h3>${platform}</h3><p>System requirements have not been published. Micrase's Assault is not currently available for Android.</p>`;
+        }
         if (available && releases) {
           const legacyLinks = releases.legacy?.length
             ? `<details class="legacy-dropdown"><summary>Legacy releases</summary><div class="legacy-options">${releases.legacy.map(release => `<a href="${release.url}">${release.label}</a>`).join("")}</div></details>`
