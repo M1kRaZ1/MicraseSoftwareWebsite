@@ -1,8 +1,12 @@
 Download links instructions:
 
-**Micrase's Assault (Linux only)**
+**Micrase's Assault**
 --Latest release--
-https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-x86_64.AppImage
+https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.2.1-x86_64.AppImage
+--Latest release (macOS)--
+https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.assault_a0.2.2.universal.dmg
+--Legacy release (macOS)--
+https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.assault_a0.2.1-universal.dmg
 
 **Pigeon weather (android only)**
 --Latest release--
