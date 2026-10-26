@@ -45,6 +45,12 @@ h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman
 .device-notice p { margin: 0 0 16px; color: #687781; font-size: 13px; line-height: 1.5; }
 .device-notice form { display: flex; justify-content: flex-end; }
 .device-notice button { padding: 7px 12px; border: 1px solid #1e5d88; border-radius: 3px; color: white; background: linear-gradient(#3788ba, #246b9a); font-weight: bold; }
+.download-notice { width: min(380px, calc(100% - 32px)); padding: 19px; border: 1px solid #b9cbd6; border-radius: 4px; color: #263746; box-shadow: 0 8px 28px #172a3a40; }
+.download-notice::backdrop { background: #172a3a80; }
+.download-notice h2 { margin: 0 0 8px; color: #31536b; font: bold 19px Georgia, "Times New Roman", serif; }
+.download-notice iframe { display: block; width: 100%; min-height: 58px; margin-bottom: 16px; border: 1px solid #d5dfe5; background: #fff; }
+.download-notice form { display: flex; justify-content: flex-end; }
+.download-notice button { padding: 7px 12px; border: 1px solid #1e5d88; border-radius: 3px; color: white; background: linear-gradient(#3788ba, #246b9a); font-weight: bold; }
 
 .back-link { display: inline-block; margin-bottom: 16px; color: #34769d; font-size: 12px; text-decoration: none; }
 .back-link:hover { text-decoration: underline; }
@@ -66,13 +72,14 @@ h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman
 .system-requirements .requirements-note { margin: 0 0 8px; }
 .system-requirements ul { display: grid; gap: 6px; margin: 0; padding-left: 19px; }
 .download-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 11px; }
-.download-link { display: inline-block; padding: 8px 11px; border: 1px solid #1e5d88; border-radius: 3px; color: white; background: linear-gradient(#3788ba, #246b9a); font-size: 12px; font-weight: bold; text-decoration: none; }
+.download-link { display: inline-block; padding: 8px 11px; border: 1px solid #1e5d88; border-radius: 3px; color: white; background: linear-gradient(#3788ba, #246b9a); font-family: inherit; font-size: 12px; font-weight: bold; text-decoration: none; cursor: pointer; }
 .download-link:hover { background: linear-gradient(#4396c8, #2d78a8); }
 .legacy-dropdown { color: #34769d; font-size: 12px; }
 .legacy-dropdown summary { cursor: pointer; }
 .legacy-options { display: grid; gap: 7px; margin-top: 8px; padding: 9px; border: 1px solid #d5dfe5; border-radius: 3px; background: #f7f9fa; }
 .legacy-options a { color: #34769d; text-decoration: none; }
 .legacy-options a:hover { text-decoration: underline; }
+.legacy-empty { color: #687781; }
 .not-found { padding: 18px; color: #657783; font-size: 13px; }
 
 @media (max-width: 480px) {

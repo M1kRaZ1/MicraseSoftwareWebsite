@@ -18,6 +18,12 @@
 
   <footer class="wrap site-footer">© 2026 Micrase1</footer>
 
+  <dialog class="download-notice" id="aarch64-notice" aria-labelledby="aarch64-notice-title">
+    <h2 id="aarch64-notice-title">AppImage aarch64</h2>
+    <iframe title="AppImage aarch 64 availability notice" srcdoc="&lt;p&gt;Oops! not yet avalaible, check back later!&lt;/p&gt;"></iframe>
+    <form method="dialog"><button type="submit">Close</button></form>
+  </dialog>
+
   <script>
     const software = {
       "micrase-assault": {
@@ -27,11 +33,21 @@
         comingSoon: ["Windows"],
         systemRequirements: {
           Linux: {
-            items: [
-              "Operating system: a modern 64-bit Linux distribution.",
-              "Processor: a 64-bit x86 CPU that supports x86-64-v2. Not every 64-bit processor meets this requirement.",
-              "Graphics: a graphics card or chip that supports OpenGL 2.0."
-            ]
+            architectures: [{
+              label: "Linux (x86_64)",
+              items: [
+                "Operating system: a modern 64-bit Linux distribution.",
+                "Processor: a 64-bit x86 CPU that supports x86-64-v2. Not every 64-bit processor meets this requirement.",
+                "Graphics: a graphics card or chip that supports OpenGL 2.0."
+              ]
+            }, {
+              label: "Linux (aarch64)",
+              items: [
+                "Operating system: a modern 64-bit Linux distribution.",
+                "Processor: an ARM-v8a-compatible chip.",
+                "Graphics: a chip compatible with OpenGL 2.0."
+              ]
+            }]
           },
           macOS: {
             items: [
@@ -53,26 +69,36 @@
           Linux: {
             note: "Alpha release: expect game-breaking bugs and glitches.",
             latest: {
-              label: "Alpha 0.2.1 (Linux AppImage)",
-              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.2.1-x86_64.AppImage"
+              label: "Alpha 0.2.3 (AppImage x86_64)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.2.3-x86_64.AppImage"
             },
             legacy: [{
-              label: "Alpha 0.1.2 (Linux AppImage)",
+              label: "Alpha 0.2.1 (AppImage x86_64)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.2.1-x86_64.AppImage"
+            }, {
+              label: "Alpha 0.2.0 (AppImage x86_64)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.2.0-x86_64.AppImage"
+            }, {
+              label: "Alpha 0.1.2 (AppImage x86_64)",
               url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.1.2-x86_64.AppImage"
-            }]
+            }],
+            legacyAarch64: []
           },
           macOS: {
             note: "Alpha release: expect game-breaking bugs and glitches.",
             latest: {
-              label: "Alpha 0.2.2 universal (DMG)",
-              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.assault_a0.2.2.universal.dmg"
+              label: "Alpha 0.2.3 universal (DMG)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.Assault_a0.2.3.universal.dmg"
             },
             legacy: [{
+              label: "Alpha 0.2.2 universal (DMG)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.assault_a0.2.2.universal.dmg"
+            }, {
               label: "Alpha 0.2.1 universal (DMG)",
               url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.assault_a0.2.1-universal.dmg"
             }, {
               label: "Alpha 0.1.2 Intel (DMG)",
-              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.Assault_Intel.AppleSilicon.dmg"
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.Assault__a0.1.2_Intel.dmg"
             }]
           }
         }
@@ -198,15 +224,27 @@
         if (requirementsContent) {
           const requirements = selectedSoftware.systemRequirements[platform];
           requirementsContent.innerHTML = requirements
-            ? `<h3>${platform}</h3>${requirements.note ? `<p class="requirements-note">${requirements.note}</p>` : ""}<ul>${requirements.items.map(item => `<li>${item}</li>`).join("")}</ul>`
+            ? requirements.architectures
+              ? requirements.architectures.map(architecture => `<h3>${architecture.label}</h3><ul>${architecture.items.map(item => `<li>${item}</li>`).join("")}</ul>`).join("")
+              : `<h3>${platform}</h3>${requirements.note ? `<p class="requirements-note">${requirements.note}</p>` : ""}<ul>${requirements.items.map(item => `<li>${item}</li>`).join("")}</ul>`
             : `<h3>${platform}</h3><p>System requirements have not been published. Micrase's Assault is not currently available for Android.</p>`;
         }
         if (available && releases) {
-          const legacyLinks = releases.legacy?.length
-            ? `<details class="legacy-dropdown"><summary>Legacy releases</summary><div class="legacy-options">${releases.legacy.map(release => `<a href="${release.url}">${release.label}</a>`).join("")}</div></details>`
-            : "";
+          const createLegacyDropdown = (label, legacyReleases) => `<details class="legacy-dropdown"><summary>${label ? `Legacy releases · ${label}` : "Legacy releases"}</summary><div class="legacy-options">${legacyReleases.length ? legacyReleases.map(release => `<a href="${release.url}">${release.label}</a>`).join("") : '<span class="legacy-empty">No legacy releases available.</span>'}</div></details>`;
+          const legacyLinks = platform === "Linux"
+            ? `${createLegacyDropdown("AppImage x86_64", releases.legacy || [])}${createLegacyDropdown("AppImage aarch64", releases.legacyAarch64 || [])}`
+            : releases.legacy?.length
+              ? createLegacyDropdown("", releases.legacy)
+              : "";
           const releaseNote = releases.note ? `<p class="release-note">${releases.note}</p>` : "";
-          content.innerHTML = `<h2>Available for ${platform}</h2>${releaseNote}<div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${legacyLinks}</div>`;
+          const aarch64Link = platform === "Linux"
+            ? '<button class="download-link unavailable-download" type="button" data-aarch64-download>Download latest · AppImage aarch64</button>'
+            : "";
+          content.innerHTML = `<h2>Available for ${platform}</h2>${releaseNote}<div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${aarch64Link}${legacyLinks}</div>`;
+          const aarch64Button = content.querySelector("[data-aarch64-download]");
+          if (aarch64Button) {
+            aarch64Button.addEventListener("click", () => document.querySelector("#aarch64-notice").showModal());
+          }
         } else {
           content.innerHTML = available
             ? `<h2>Available for ${platform}</h2><p>Downloads for this platform have not been added yet.</p>`
