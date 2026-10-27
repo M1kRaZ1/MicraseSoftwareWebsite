@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Micrase's Assault changelog</title>
+  <style>
+    :root { font-family: "Trebuchet MS", "Lucida Grande", sans-serif; color: #263746; background: #fff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 14px; }
+    h1 { margin: 0 0 16px; color: #365b75; font: bold 17px Georgia, "Times New Roman", serif; }
+    h2 { margin: 16px 0 7px; padding-top: 12px; border-top: 1px solid #e1e6ea; color: #536c7c; font: bold 13px Georgia, "Times New Roman", serif; }
+    h2:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+    ul { display: grid; gap: 5px; margin: 0; padding-left: 18px; }
+    li, p { color: #687781; font-size: 12px; line-height: 1.5; }
+    .error { color: #b42318; }
+  </style>
+</head>
+<body>
+  <div id="changelog-content"><p>Loading changelog…</p></div>
+  <script>
+    const content = document.querySelector("#changelog-content");
+
+    function decodeHexEscapes(value) {
+      const bytes = [];
+      let decoded = "";
+      for (let index = 0; index < value.length; index += 1) {
+        if (value[index] === "\\" && value[index + 1] === "'" && /^[0-9a-f]{2}$/i.test(value.slice(index + 2, index + 4))) {
+          if (bytes.length) decoded += new TextDecoder("windows-1252").decode(new Uint8Array(bytes));
+          bytes.length = 0;
+          bytes.push(parseInt(value.slice(index + 2, index + 4), 16));
+          index += 3;
+        } else {
+          if (bytes.length) decoded += new TextDecoder("windows-1252").decode(new Uint8Array(bytes));
+          bytes.length = 0;
+          decoded += value[index];
+        }
+      }
+      if (bytes.length) decoded += new TextDecoder("windows-1252").decode(new Uint8Array(bytes));
+      return decoded;
+    }
+
+    function rtfToLines(rtf) {
+      const contentStart = rtf.indexOf("\\cf0") + 5;
+      const body = rtf.slice(contentStart).replace(/}\s*$/, "");
+      return decodeHexEscapes(body)
+        .replace(/\\\r?\n/g, "\n")
+        .replace(/\\[a-z]+\d* ?/gi, "")
+        .replace(/[{}]/g, "")
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(Boolean);
+    }
+
+    function render(lines) {
+      content.replaceChildren();
+      let list;
+      lines.forEach(line => {
+        if (/^Alpha /.test(line)) {
+          list = null;
+          const heading = document.createElement("h2");
+          heading.textContent = line.replace(/;$/, "");
+          content.append(heading);
+        } else if (line.startsWith("- ")) {
+          if (!list) {
+            list = document.createElement("ul");
+            content.append(list);
+          }
+          const item = document.createElement("li");
+          item.textContent = line.slice(2);
+          list.append(item);
+        } else if (line.includes("Changelog")) {
+          const heading = document.createElement("h1");
+          heading.textContent = line.replace(/^-+|-+$/g, "").trim();
+          content.append(heading);
+        }
+      });
+    }
+
+    fetch("Changelog%20micrase%20assault.rtf")
+      .then(response => {
+        if (!response.ok) throw new Error("Unable to load the RTF file.");
+        return response.text();
+      })
+      .then(rtf => render(rtfToLines(rtf)))
+      .catch(() => {
+        content.innerHTML = '<p class="error">The changelog could not be loaded.</p>';
+      });
+  </script>
+</body>
+</html>

@@ -31,52 +31,6 @@
         icon: "softicon_Micrase_Assault_game.webp",
         platforms: ["Linux", "macOS"],
         comingSoon: ["Windows"],
-        changelog: [{
-          version: "Alpha 0.1.2",
-          items: [
-            "Added background music (selectable in the settings).",
-            "Addition of the map, Desert oasis and Oil rig.",
-            "Addition of difficulties (the easier, the more expensive ammo is)."
-          ]
-        }, {
-          version: "Alpha 0.2.0",
-          items: [
-            "Minor bug fixes.",
-            "Addition of 2 new maps: Forest Cabin and New York."
-          ]  
-          
-        }, {
-          version: "Alpha 0.2.1",
-          items: [
-            "The game now supports Apple silicon Macs.",
-            "UI enhancement: 360 degrees Panorama of a random map on title screen every time the game is launched.",
-            "Player model now exists.",
-            "Addition of first person view: added the player model preview."
-          ]
-        }, {
-          version: "Alpha 0.2.2",
-          items: [
-            "Addition of a new map, Stairs land.",
-            "Addition of third person view (F5 Key).",
-            "New experimental movement system, stairs use."
-          ]
-        }, {
-          version: "Alpha 0.2.3",
-          items: [
-            "Improved movement system, addition of jump button (spacebar key) and fixed many issues with player pos checks after jumping.",
-            "Modified Stairs land, instead of interconnected twin towers, it’s now a vast land of stairs with a plate with Ammo box.",
-            "On large maps (such as Stairs land) enemies now only spawn near the player."
-          ]
-        }, {
-          version: "Alpha 0.3.0 (coming soon)",
-          items: [
-            "Achievements system.",
-            "New weapons and a weapon shop (currency is your global kills of all times)."
-          ]
-        }, {
-          version: "Alpha ?.?.?",
-          items: ["MORE TO COME!!!"]
-        }],
         systemRequirements: {
           Linux: {
             architectures: [{
@@ -108,10 +62,16 @@
           Linux: {
             note: "Alpha release: expect game-breaking bugs and glitches.",
             latest: {
-              label: "Alpha 0.2.3 (AppImage x86_64)",
-              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.2.3-x86_64.AppImage"
+              label: "Alpha 0.3.1 (AppImage x86_64)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.3.1-x86_64.AppImage"
             },
             legacy: [{
+              label: "Alpha 0.3.0 (AppImage x86_64)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.3.0-x86_64.AppImage"
+            }, {
+              label: "Alpha 0.2.3 (AppImage x86_64)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.2.3-x86_64.AppImage"
+            }, {
               label: "Alpha 0.2.1 (AppImage x86_64)",
               url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.2.1-x86_64.AppImage"
             }, {
@@ -125,10 +85,16 @@
           macOS: {
             note: "Alpha release: expect game-breaking bugs and glitches.",
             latest: {
-              label: "Alpha 0.2.3 universal (DMG)",
-              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.Assault_a0.2.3.universal.dmg"
+              label: "Alpha 0.3.1 universal (DMG)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.assault_a0.3.1-universal.dmg"
             },
             legacy: [{
+              label: "Alpha 0.3.0 universal (DMG)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.assault_a0.3.0-universal.dmg"
+            }, {
+              label: "Alpha 0.2.3 universal (DMG)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.Assault_a0.2.3.universal.dmg"
+            }, {
               label: "Alpha 0.2.2 universal (DMG)",
               url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases.assault_a0.2.2.universal.dmg"
             }, {
@@ -224,8 +190,8 @@
     } else {
       document.title = `${selectedSoftware.name} | Micrase's softwares`;
       const initialPlatform = selectedSoftware.platforms[0];
-      const changelogPanel = selectedSoftware.changelog
-        ? `<aside class="changelog-panel" aria-labelledby="changelog-heading"><h2 id="changelog-heading">Changelog</h2>${selectedSoftware.changelog.map(entry => `<section class="changelog-entry"><h3>${entry.version}</h3><ul>${entry.items.map(item => `<li>${item}</li>`).join("")}</ul></section>`).join("")}</aside>`
+      const changelogPanel = requestedSoftware === "micrase-assault"
+        ? '<aside class="changelog-panel" aria-labelledby="changelog-heading"><h2 id="changelog-heading">Changelog</h2><iframe class="changelog-viewer" src="changelog-viewer.html" title="Micrase\'s Assault changelog" loading="lazy"></iframe></aside>'
         : "";
       detail.innerHTML = `
         <div class="software-detail-layout">
