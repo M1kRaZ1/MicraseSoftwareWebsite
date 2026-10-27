@@ -31,6 +31,52 @@
         icon: "softicon_Micrase_Assault_game.webp",
         platforms: ["Linux", "macOS"],
         comingSoon: ["Windows"],
+        changelog: [{
+          version: "Alpha 0.1.2",
+          items: [
+            "Added background music (selectable in the settings).",
+            "Addition of the map, Desert oasis and Oil rig.",
+            "Addition of difficulties (the easier, the more expensive ammo is)."
+          ]
+        }, {
+          version: "Alpha 0.2.0",
+          items: [
+            "Minor bug fixes.",
+            "Addition of 2 new maps: Forest Cabin and New York."
+          ]  
+          
+        }, {
+          version: "Alpha 0.2.1",
+          items: [
+            "The game now supports Apple silicon Macs.",
+            "UI enhancement: 360 degrees Panorama of a random map on title screen every time the game is launched.",
+            "Player model now exists.",
+            "Addition of first person view: added the player model preview."
+          ]
+        }, {
+          version: "Alpha 0.2.2",
+          items: [
+            "Addition of a new map, Stairs land.",
+            "Addition of third person view (F5 Key), enhancement.",
+            "New experimental movement system, stairs use."
+          ]
+        }, {
+          version: "Alpha 0.2.3",
+          items: [
+            "Improved movement system, addition of jump button (spacebar key) and fixed many issues with player pos checks after jumping.",
+            "Modified Stairs land, instead of interconnected twin towers, it’s now a vast land of stairs with a plate with Ammo box.",
+            "On large maps (such as Stairs land) enemies now only spawn near the player."
+          ]
+        }, {
+          version: "Alpha 0.3.0 (coming soon)",
+          items: [
+            "Achievements system.",
+            "New weapons and a weapon shop (currency is your global kills of all times)."
+          ]
+        }, {
+          version: "Alpha ?.?.?",
+          items: ["MORE TO COME!!!"]
+        }],
         systemRequirements: {
           Linux: {
             architectures: [{
@@ -186,20 +232,29 @@
     } else {
       document.title = `${selectedSoftware.name} | Micrase's softwares`;
       const initialPlatform = selectedSoftware.platforms[0];
+      const changelogPanel = selectedSoftware.changelog
+        ? `<aside class="changelog-panel" aria-labelledby="changelog-heading"><h2 id="changelog-heading">Changelog</h2>${selectedSoftware.changelog.map(entry => `<section class="changelog-entry"><h3>${entry.version}</h3><ul>${entry.items.map(item => `<li>${item}</li>`).join("")}</ul></section>`).join("")}</aside>`
+        : "";
       detail.innerHTML = `
-        <a class="back-link" href="index.html">&larr; All software</a>
-        <section class="detail-panel" aria-labelledby="software-name">
-          <div class="detail-heading">
-            <img class="software-icon app-icon" src="${selectedSoftware.icon}" alt="" aria-hidden="true">
-            <div><h1 id="software-name">${selectedSoftware.name}</h1><p>Choose a platform</p></div>
+        <div class="software-detail-layout">
+          <div class="detail-column">
+            <a class="back-link" href="index.html">&larr; All software</a>
+            <section class="detail-panel" aria-labelledby="software-name">
+              <div class="detail-heading">
+                <img class="software-icon app-icon" src="${selectedSoftware.icon}" alt="" aria-hidden="true">
+                <div><h1 id="software-name">${selectedSoftware.name}</h1><p>Choose a platform</p></div>
+              </div>
+              <div class="platform-tabs" role="tablist" aria-label="Available platforms">
+                ${["Android", "Linux", "macOS", "Windows"].map((platform, index) => `<button class="platform-tab" id="tab-${index}" type="button" role="tab" aria-selected="${platform === initialPlatform}" aria-controls="platform-content" tabindex="${platform === initialPlatform ? 0 : -1}" data-platform="${platform}">${platform}</button>`).join("")}
+              </div>
+              <div class="platform-content" id="platform-content" role="tabpanel" aria-labelledby="tab-${["Android", "Linux", "macOS", "Windows"].indexOf(initialPlatform)}"></div>
+            </section>
           </div>
-          <div class="platform-tabs" role="tablist" aria-label="Available platforms">
-            ${["Android", "Linux", "macOS", "Windows"].map((platform, index) => `<button class="platform-tab" id="tab-${index}" type="button" role="tab" aria-selected="${platform === initialPlatform}" aria-controls="platform-content" tabindex="${platform === initialPlatform ? 0 : -1}" data-platform="${platform}">${platform}</button>`).join("")}
-          </div>
-          <div class="platform-content" id="platform-content" role="tabpanel" aria-labelledby="tab-${["Android", "Linux", "macOS", "Windows"].indexOf(initialPlatform)}"></div>
-        </section>`;
+          ${changelogPanel}
+        </div>`;
+      const detailColumn = detail.querySelector(".detail-column");
       if (selectedSoftware.systemRequirements) {
-        detail.insertAdjacentHTML("beforeend", `
+        detailColumn.insertAdjacentHTML("beforeend", `
           <section class="detail-panel system-requirements" aria-labelledby="requirements-heading">
             <h2 id="requirements-heading">System requirements</h2>
             <div id="requirements-content" aria-live="polite"></div>

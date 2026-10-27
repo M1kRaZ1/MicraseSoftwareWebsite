@@ -55,6 +55,14 @@ h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman
 .back-link { display: inline-block; margin-bottom: 16px; color: #34769d; font-size: 12px; text-decoration: none; }
 .back-link:hover { text-decoration: underline; }
 .detail-panel { overflow: hidden; border: 1px solid #ccd6dd; border-radius: 3px; background: #fff; }
+.software-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; align-items: start; gap: 18px; }
+.detail-column { min-width: 0; }
+.changelog-panel { overflow: hidden; padding: 17px; border: 1px solid #ccd6dd; border-radius: 3px; background: #fff; }
+.changelog-panel h2 { margin: 0 0 12px; color: #365b75; font: bold 17px Georgia, "Times New Roman", serif; }
+.changelog-entry + .changelog-entry { margin-top: 17px; padding-top: 13px; border-top: 1px solid #e1e6ea; }
+.changelog-entry h3 { margin: 0 0 7px; color: #536c7c; font: bold 13px Georgia, "Times New Roman", serif; }
+.changelog-entry ul { display: grid; gap: 5px; margin: 0; padding-left: 18px; }
+.changelog-entry li { color: #687781; font-size: 12px; line-height: 1.5; }
 .detail-heading { display: flex; align-items: center; gap: 13px; padding: 17px; border-bottom: 1px solid #d8e0e5; background: linear-gradient(#fff, #f6f8f9); }
 .detail-heading h1 { margin: 0; }
 .detail-heading p { margin: 5px 0 0; color: #74818b; font-size: 11px; }
@@ -88,7 +96,11 @@ h1 { margin: 0 0 14px; color: #31536b; font: bold 22px Georgia, "Times New Roman
   .brand { font-size: 19px; }
   .header-note { font-size: 10px; }
   main { padding-top: 22px; }
-  .software-layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .software-layout, .software-detail-layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .software-item { gap: 10px; padding: 11px; }
   .software-copy strong { font-size: 15px; }
+}
+
+@media (min-width: 481px) and (max-width: 720px) {
+  .software-detail-layout { grid-template-columns: minmax(0, 1fr); }
 }
