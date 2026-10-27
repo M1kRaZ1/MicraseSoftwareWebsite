@@ -18,9 +18,9 @@
 
   <footer class="wrap site-footer">© 2026 Micrase1</footer>
 
-  <dialog class="download-notice" id="aarch64-notice" aria-labelledby="aarch64-notice-title">
-    <h2 id="aarch64-notice-title">AppImage aarch64</h2>
-    <iframe title="AppImage aarch 64 availability notice" srcdoc="&lt;p&gt;Oops! not yet avalaible, check back later!&lt;/p&gt;"></iframe>
+  <dialog class="download-notice" id="arm64-notice" aria-labelledby="arm64-notice-title">
+    <h2 id="arm64-notice-title">Linux ARM64 compatibility</h2>
+    <iframe title="Linux ARM64 compatibility notice" srcdoc="&lt;p&gt;for Linux ARM64 users: You must use a translation layer to run the x86_64 (amd64) build on your device.&lt;/p&gt;"></iframe>
     <form method="dialog"><button type="submit">Close</button></form>
   </dialog>
 
@@ -86,13 +86,6 @@
                 "Processor: a 64-bit x86 CPU that supports x86-64-v2. Not every 64-bit processor meets this requirement.",
                 "Graphics: a graphics card or chip that supports OpenGL 2.0."
               ]
-            }, {
-              label: "Linux (aarch64)",
-              items: [
-                "Operating system: a modern 64-bit Linux distribution.",
-                "Processor: an ARM-v8a-compatible chip.",
-                "Graphics: a chip compatible with OpenGL 2.0."
-              ]
             }]
           },
           macOS: {
@@ -127,8 +120,7 @@
             }, {
               label: "Alpha 0.1.2 (AppImage x86_64)",
               url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrase-Assault-Game-ALPHA_0.1.2-x86_64.AppImage"
-            }],
-            legacyAarch64: []
+            }]
           },
           macOS: {
             note: "Alpha release: expect game-breaking bugs and glitches.",
@@ -287,18 +279,18 @@
         if (available && releases) {
           const createLegacyDropdown = (label, legacyReleases) => `<details class="legacy-dropdown"><summary>${label ? `Legacy releases · ${label}` : "Legacy releases"}</summary><div class="legacy-options">${legacyReleases.length ? legacyReleases.map(release => `<a href="${release.url}">${release.label}</a>`).join("") : '<span class="legacy-empty">No legacy releases available.</span>'}</div></details>`;
           const legacyLinks = platform === "Linux"
-            ? `${createLegacyDropdown("AppImage x86_64", releases.legacy || [])}${createLegacyDropdown("AppImage aarch64", releases.legacyAarch64 || [])}`
+            ? createLegacyDropdown("AppImage x86_64", releases.legacy || [])
             : releases.legacy?.length
               ? createLegacyDropdown("", releases.legacy)
               : "";
           const releaseNote = releases.note ? `<p class="release-note">${releases.note}</p>` : "";
-          const aarch64Link = platform === "Linux"
-            ? '<button class="download-link unavailable-download" type="button" data-aarch64-download>Download latest · AppImage aarch64</button>'
+          const arm64InfoLink = platform === "Linux"
+            ? '<button class="download-link" type="button" data-arm64-info>Linux ARM64 compatibility</button>'
             : "";
-          content.innerHTML = `<h2>Available for ${platform}</h2>${releaseNote}<div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${aarch64Link}${legacyLinks}</div>`;
-          const aarch64Button = content.querySelector("[data-aarch64-download]");
-          if (aarch64Button) {
-            aarch64Button.addEventListener("click", () => document.querySelector("#aarch64-notice").showModal());
+          content.innerHTML = `<h2>Available for ${platform}</h2>${releaseNote}<div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${arm64InfoLink}${legacyLinks}</div>`;
+          const arm64InfoButton = content.querySelector("[data-arm64-info]");
+          if (arm64InfoButton) {
+            arm64InfoButton.addEventListener("click", () => document.querySelector("#arm64-notice").showModal());
           }
         } else {
           content.innerHTML = available
