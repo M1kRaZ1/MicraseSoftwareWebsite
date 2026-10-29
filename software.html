@@ -111,12 +111,16 @@
           },
           Windows: {
             latest: {
-              label: "Alpha 0.3.2 (EXE)",
-              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases-assault_ALPHA-0.3.2.exe"
+              label: "Alpha 0.3.2 (ZIP)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases-assault_ALPHA-0.3.2.zip"
+            },
+            directxInstaller: {
+              label: "Encountering an error? Download the DirectX installer",
+              url: "dxwebsetup.exe"
             },
             legacy: [{
-              label: "Alpha 0.3.1 (EXE)",
-              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases-assault_ALPHA-0.3.1.exe"
+              label: "Alpha 0.3.1 (ZIP)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases-assault_ALPHA-0.3.1.zip"
             }]
           }
         }
@@ -267,7 +271,10 @@
           const arm64InfoLink = platform === "Linux"
             ? '<button class="download-link" type="button" data-arm64-info>Linux ARM64 compatibility</button>'
             : "";
-          content.innerHTML = `<h2>Available for ${platform}</h2>${releaseNote}<div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${arm64InfoLink}${legacyLinks}</div>`;
+          const directxInstallerLink = releases.directxInstaller
+            ? `<a class="download-link" href="${releases.directxInstaller.url}">${releases.directxInstaller.label}</a>`
+            : "";
+          content.innerHTML = `<h2>Available for ${platform}</h2>${releaseNote}<div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${directxInstallerLink}${arm64InfoLink}${legacyLinks}</div>`;
           const arm64InfoButton = content.querySelector("[data-arm64-info]");
           if (arm64InfoButton) {
             arm64InfoButton.addEventListener("click", () => document.querySelector("#arm64-notice").showModal());
