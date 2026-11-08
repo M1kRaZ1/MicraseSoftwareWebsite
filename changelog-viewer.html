@@ -19,8 +19,8 @@
 <body>
   <div id="changelog-content"><p>Loading changelog…</p></div>
   <script>
-    const content = document.querySelector("#changelog-content");
-    const changelogs = {
+    var content = document.querySelector("#changelog-content");
+    var changelogs = {
       "micrase-assault": {
         file: "Changelog%20micrase%20assault.rtf",
         title: "Micrase's Assault"
@@ -30,74 +30,82 @@
         title: "Your Local AI"
       }
     };
-    const requestedSoftware = new URLSearchParams(window.location.search).get("software") || "micrase-assault";
-    const changelog = changelogs[requestedSoftware];
-
-    function decodeHexEscapes(value) {
-      const bytes = [];
-      let decoded = "";
-      for (let index = 0; index < value.length; index += 1) {
-        if (value[index] === "\\" && value[index + 1] === "'" && /^[0-9a-f]{2}$/i.test(value.slice(index + 2, index + 4))) {
-          if (bytes.length) decoded += new TextDecoder("windows-1252").decode(new Uint8Array(bytes));
-          bytes.length = 0;
-          bytes.push(parseInt(value.slice(index + 2, index + 4), 16));
-          index += 3;
-        } else {
-          if (bytes.length) decoded += new TextDecoder("windows-1252").decode(new Uint8Array(bytes));
-          bytes.length = 0;
-          decoded += value[index];
+    function getQueryParameter(name) {
+      var query = window.location.search.replace(/^\?/, "").split("&");
+      for (var index = 0; index < query.length; index += 1) {
+        var pair = query[index].split("=");
+        if (decodeURIComponent(pair[0].replace(/\+/g, " ")) === name) {
+          return decodeURIComponent((pair.slice(1).join("=") || "").replace(/\+/g, " "));
         }
       }
-      if (bytes.length) decoded += new TextDecoder("windows-1252").decode(new Uint8Array(bytes));
-      return decoded;
+      return null;
+    }
+
+    var requestedSoftware = getQueryParameter("software") || "micrase-assault";
+    var changelog = changelogs[requestedSoftware];
+
+    function decodeHexEscapes(value) {
+      var windows1252 = {
+        128: "\u20ac", 130: "\u201a", 131: "\u0192", 132: "\u201e", 133: "\u2026",
+        134: "\u2020", 135: "\u2021", 136: "\u02c6", 137: "\u2030", 138: "\u0160",
+        139: "\u2039", 140: "\u0152", 142: "\u017d", 145: "\u2018", 146: "\u2019",
+        147: "\u201c", 148: "\u201d", 149: "\u2022", 150: "\u2013", 151: "\u2014",
+        152: "\u02dc", 153: "\u2122", 154: "\u0161", 155: "\u203a", 156: "\u0153",
+        158: "\u017e", 159: "\u0178"
+      };
+      return value.replace(/\\'([0-9a-f]{2})/gi, function (match, hex) {
+        var byte = parseInt(hex, 16);
+        return windows1252[byte] || String.fromCharCode(byte);
+      });
     }
 
     function rtfToLines(rtf) {
-      const contentStart = rtf.indexOf("\\cf0") + 5;
-      const body = rtf.slice(contentStart).replace(/}\s*$/, "");
+      var contentStart = rtf.indexOf("\\cf0") + 5;
+      var body = rtf.slice(contentStart).replace(/}\s*$/, "");
       return decodeHexEscapes(body)
         .replace(/\\par[d]?/gi, "\n")
         .replace(/\\\r?\n/g, "\n")
         .replace(/\\[a-z]+\d* ?/gi, "")
         .replace(/[{}]/g, "")
         .split(/\r?\n/)
-        .map(line => line.trim())
-        .filter(Boolean);
+        .map(function (line) { return line.trim(); })
+        .filter(function (line) { return Boolean(line); });
     }
 
     function render(lines) {
-      content.replaceChildren();
-      let list;
-      lines.forEach(line => {
+      while (content.firstChild) content.removeChild(content.firstChild);
+      var list;
+      lines.forEach(function (line) {
         if (/^(Alpha|Version) /.test(line)) {
           list = null;
-          const heading = document.createElement("h2");
+          var heading = document.createElement("h2");
           heading.textContent = line.replace(/;$/, "");
-          content.append(heading);
-        } else if (line.startsWith("- ")) {
+          content.appendChild(heading);
+        } else if (line.indexOf("- ") === 0) {
           if (!list) {
             list = document.createElement("ul");
-            content.append(list);
+            content.appendChild(list);
           }
-          const item = document.createElement("li");
-          const text = line.slice(2);
-          const urlPattern = /https?:\/\/[^\s)]+/g;
-          let previousIndex = 0;
-          for (const match of text.matchAll(urlPattern)) {
-            item.append(document.createTextNode(text.slice(previousIndex, match.index)));
-            const link = document.createElement("a");
+          var item = document.createElement("li");
+          var text = line.slice(2);
+          var urlPattern = /https?:\/\/[^\s)]+/g;
+          var previousIndex = 0;
+          var match;
+          while ((match = urlPattern.exec(text))) {
+            item.appendChild(document.createTextNode(text.slice(previousIndex, match.index)));
+            var link = document.createElement("a");
             link.href = match[0];
             link.textContent = match[0];
             link.rel = "noopener noreferrer";
-            item.append(link);
+            item.appendChild(link);
             previousIndex = match.index + match[0].length;
           }
-          item.append(document.createTextNode(text.slice(previousIndex)));
-          list.append(item);
-        } else if (line.includes("Changelog")) {
-          const heading = document.createElement("h1");
+          item.appendChild(document.createTextNode(text.slice(previousIndex)));
+          list.appendChild(item);
+        } else if (line.indexOf("Changelog") !== -1) {
+          var heading = document.createElement("h1");
           heading.textContent = line.replace(/^-+|-+$/g, "").trim();
-          content.append(heading);
+          content.appendChild(heading);
         }
       });
     }
@@ -105,16 +113,21 @@
     if (!changelog) {
       content.innerHTML = '<p class="error">The changelog could not be loaded.</p>';
     } else {
-      document.title = `${changelog.title} changelog`;
-      fetch(changelog.file)
-      .then(response => {
-        if (!response.ok) throw new Error("Unable to load the RTF file.");
-        return response.text();
-      })
-      .then(rtf => render(rtfToLines(rtf)))
-      .catch(() => {
+      document.title = changelog.title + " changelog";
+      var request = new XMLHttpRequest();
+      request.open("GET", changelog.file, true);
+      request.onreadystatechange = function () {
+        if (request.readyState !== 4) return;
+        if (request.status >= 200 && request.status < 300) {
+          render(rtfToLines(request.responseText));
+        } else {
+          content.innerHTML = '<p class="error">The changelog could not be loaded.</p>';
+        }
+      };
+      request.onerror = function () {
         content.innerHTML = '<p class="error">The changelog could not be loaded.</p>';
-      });
+      };
+      request.send();
     }
   </script>
 </body>

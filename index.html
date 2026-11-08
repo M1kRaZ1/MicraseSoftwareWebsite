@@ -22,7 +22,7 @@
           <h2 id="games-heading">Games</h2>
           <div class="software-list" aria-label="Games">
             <a class="software-item" href="software.html?software=micrase-assault" data-platforms="linux macos windows">
-              <img class="software-icon app-icon" src="softicon_Micrase_Assault_game.webp" alt="" aria-hidden="true">
+              <img class="software-icon app-icon" src="softicon_Micrase_Assault_game.png" alt="" aria-hidden="true">
               <span class="software-copy">
                 <strong>Micrase's Assault</strong>
                 <span>Linux · macOS · Windows</span>
@@ -30,7 +30,7 @@
               <span class="item-arrow" aria-hidden="true">›</span>
             </a>
             <a class="software-item" href="software.html?software=touch-grass" data-platforms="android macos">
-              <img class="software-icon app-icon" src="softicon_touchgrass.webp" alt="" aria-hidden="true">
+              <img class="software-icon app-icon" src="softicon_touchgrass.png" alt="" aria-hidden="true">
               <span class="software-copy">
                 <strong>Touch Grass</strong>
                 <span>Android · macOS</span>
@@ -43,7 +43,7 @@
           <h2 id="software-heading">Software</h2>
           <div class="software-list" aria-label="Software">
             <a class="software-item" href="software.html?software=so-tuff" data-platforms="android windows linux">
-              <img class="software-icon app-icon" src="softicon_sotuff.webp" alt="" aria-hidden="true">
+              <img class="software-icon app-icon" src="softicon_sotuff.png" alt="" aria-hidden="true">
               <span class="software-copy">
                 <strong>So Tuff</strong>
                 <span>Android · Windows · Linux · macOS support coming soon</span>
@@ -51,7 +51,7 @@
               <span class="item-arrow" aria-hidden="true">›</span>
             </a>
             <a class="software-item" href="software.html?software=pigeon-weather" data-platforms="android">
-              <img class="software-icon app-icon" src="softicon_pigeonweather.webp" alt="" aria-hidden="true">
+              <img class="software-icon app-icon" src="softicon_pigeonweather.png" alt="" aria-hidden="true">
               <span class="software-copy">
                 <strong>Pigeon Weather</strong>
                 <span>Android</span>
@@ -59,7 +59,7 @@
               <span class="item-arrow" aria-hidden="true">›</span>
             </a>
              <a class="software-item" href="software.html?software=ur-local-ai" data-platforms="android">
-              <img class="software-icon app-icon" src="softicon_urlocalai.webp" alt="" aria-hidden="true">
+              <img class="software-icon app-icon" src="softicon_urlocalai.png" alt="" aria-hidden="true">
               <span class="software-copy">
                 <strong>Your local AI</strong>
                 <span>Android</span>
@@ -80,31 +80,60 @@
 
   <footer class="wrap site-footer">© 2026 Micrase1</footer>
 
-  <dialog class="device-notice" id="ios-notice" aria-labelledby="ios-notice-title">
+  <div class="device-notice" id="ios-notice" role="dialog" aria-modal="true" aria-labelledby="ios-notice-title" aria-hidden="true">
     <h2 id="ios-notice-title">Not available for iPhone</h2>
     <p>None of the software here is currently available for Apple iPhones.</p>
-    <form method="dialog"><button type="submit">Got it</button></form>
-  </dialog>
+    <div class="notice-actions"><button type="button" data-close-notice>Got it</button></div>
+  </div>
 
   <script>
-    const userAgent = navigator.userAgent;
-    const softwareLists = [...document.querySelectorAll(".software-list")];
+    var userAgent = navigator.userAgent;
+    var softwareLists = document.querySelectorAll(".software-list");
+    var iosNotice = document.querySelector("#ios-notice");
 
     if (/iPhone|iPad|iPod/i.test(userAgent)) {
-      document.querySelector("#ios-notice").showModal();
+      iosNotice.className += " is-open";
+      iosNotice.setAttribute("aria-hidden", "false");
+      document.body.className += " modal-open";
+      iosNotice.querySelector("[data-close-notice]").focus();
     }
 
     if (/Android/i.test(userAgent)) {
-      softwareLists.forEach(softwareList => {
-        const items = [...softwareList.querySelectorAll(".software-item")];
-        items.sort((first, second) => {
-          const firstSupportsAndroid = first.dataset.platforms.split(" ").includes("android");
-          const secondSupportsAndroid = second.dataset.platforms.split(" ").includes("android");
-          return Number(secondSupportsAndroid) - Number(firstSupportsAndroid);
-        });
-        items.forEach(item => softwareList.append(item));
-      });
+      for (var listIndex = 0; listIndex < softwareLists.length; listIndex += 1) {
+        var softwareList = softwareLists[listIndex];
+        var items = softwareList.querySelectorAll(".software-item");
+        var androidItems = [];
+        var otherItems = [];
+        for (var itemIndex = 0; itemIndex < items.length; itemIndex += 1) {
+          var platforms = items[itemIndex].getAttribute("data-platforms").split(" ");
+          if (platforms.indexOf("android") !== -1) {
+            androidItems.push(items[itemIndex]);
+          } else {
+            otherItems.push(items[itemIndex]);
+          }
+        }
+        var orderedItems = androidItems.concat(otherItems);
+        for (var orderedIndex = 0; orderedIndex < orderedItems.length; orderedIndex += 1) {
+          softwareList.appendChild(orderedItems[orderedIndex]);
+        }
+      }
     }
+
+    document.querySelector("[data-close-notice]").addEventListener("click", function () {
+      iosNotice.className = iosNotice.className.replace(/\bis-open\b/, "").replace(/^\s+|\s+$/g, "");
+      iosNotice.setAttribute("aria-hidden", "true");
+      document.body.className = document.body.className.replace(/\bmodal-open\b/, "").replace(/^\s+|\s+$/g, "");
+    });
+    document.addEventListener("keydown", function (event) {
+      if (iosNotice.className.indexOf("is-open") === -1) return;
+      var keyCode = event.keyCode || event.which;
+      if (keyCode === 27) {
+        iosNotice.querySelector("[data-close-notice]").click();
+      } else if (keyCode === 9) {
+        event.preventDefault();
+        iosNotice.querySelector("[data-close-notice]").focus();
+      }
+    });
   </script>
 </body>
 </html>

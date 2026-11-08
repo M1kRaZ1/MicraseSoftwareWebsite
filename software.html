@@ -18,17 +18,17 @@
 
   <footer class="wrap site-footer">© 2026 Micrase1</footer>
 
-  <dialog class="download-notice" id="arm64-notice" aria-labelledby="arm64-notice-title">
+  <div class="download-notice" id="arm64-notice" role="dialog" aria-modal="true" aria-labelledby="arm64-notice-title" aria-hidden="true">
     <h2 id="arm64-notice-title">Linux ARM64 compatibility</h2>
     <iframe title="Linux ARM64 compatibility notice" srcdoc="&lt;p&gt;for Linux ARM64 users: You must use a translation layer to run the x86_64 (amd64) build on your device.&lt;/p&gt;"></iframe>
-    <form method="dialog"><button type="submit">Close</button></form>
-  </dialog>
+    <div class="notice-actions"><button type="button" data-close-notice>Close</button></div>
+  </div>
 
   <script>
-    const software = {
+    var software = {
       "micrase-assault": {
         name: "Micrase's Assault",
-        icon: "softicon_Micrase_Assault_game.webp",
+        icon: "softicon_Micrase_Assault_game.png",
         platforms: ["Linux", "macOS", "Windows"],
         systemRequirements: {
           Linux: {
@@ -139,7 +139,7 @@
       },
       "touch-grass": {
         name: "Touch Grass",
-        icon: "softicon_touchgrass.webp",
+        icon: "softicon_touchgrass.png",
         comingSoon: ["Linux"],
         platforms: ["Android", "macOS"],
         downloads: {
@@ -163,7 +163,7 @@
       },
       "so-tuff": {
         name: "So Tuff",
-        icon: "softicon_sotuff.webp",
+        icon: "softicon_sotuff.png",
         platforms: ["Android", "Linux", "Windows"],
         comingSoon: ["macOS"],
         downloads: {
@@ -193,7 +193,7 @@
       },
       "pigeon-weather": {
         name: "Pigeon Weather",
-        icon: "softicon_pigeonweather.webp",
+        icon: "softicon_pigeonweather.png",
         platforms: ["Android"],
         downloads: {
           Android: {
@@ -210,7 +210,7 @@
       },
        "ur-local-ai": {
         name: "Your Local AI",
-        icon: "softicon_urlocalai.webp",
+        icon: "softicon_urlocalai.png",
         platforms: ["Android"],
         downloads: {
           Android: {
@@ -233,107 +233,195 @@
       }
     };
 
-    const requestedSoftware = new URLSearchParams(window.location.search).get("software");
-    const selectedSoftware = software[requestedSoftware];
-    const detail = document.querySelector("#software-detail");
+    function getQueryParameter(name) {
+      var query = window.location.search.replace(/^\?/, "").split("&");
+      for (var index = 0; index < query.length; index += 1) {
+        var pair = query[index].split("=");
+        if (decodeURIComponent(pair[0].replace(/\+/g, " ")) === name) {
+          return decodeURIComponent((pair.slice(1).join("=") || "").replace(/\+/g, " "));
+        }
+      }
+      return null;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, function (character) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character];
+      });
+    }
+
+    function showNotice(notice) {
+      notice.className += " is-open";
+      notice.setAttribute("aria-hidden", "false");
+      document.body.className += " modal-open";
+      noticeInvoker = document.activeElement;
+      notice.querySelector("[data-close-notice]").focus();
+    }
+
+    function hideNotice(notice) {
+      notice.className = notice.className.replace(/\bis-open\b/, "").replace(/^\s+|\s+$/g, "");
+      notice.setAttribute("aria-hidden", "true");
+      document.body.className = document.body.className.replace(/\bmodal-open\b/, "").replace(/^\s+|\s+$/g, "");
+      if (noticeInvoker && noticeInvoker.focus) noticeInvoker.focus();
+    }
+
+    var noticeInvoker = null;
+    var requestedSoftware = getQueryParameter("software");
+    var selectedSoftware = software[requestedSoftware];
+    var detail = document.querySelector("#software-detail");
 
     if (!selectedSoftware) {
       document.title = "Software not found | Micrase's softwares";
       detail.innerHTML = '<a class="back-link" href="index.html">&larr; All software</a><section class="detail-panel not-found">Software not found.</section>';
     } else {
-      document.title = `${selectedSoftware.name} | Micrase's softwares`;
-      const initialPlatform = selectedSoftware.platforms[0];
-      const changelogPanel = ["micrase-assault", "ur-local-ai"].includes(requestedSoftware)
-        ? `<aside class="changelog-panel" aria-labelledby="changelog-heading"><h2 id="changelog-heading">Changelog</h2><iframe class="changelog-viewer" src="changelog-viewer.html${requestedSoftware === "ur-local-ai" ? "?software=ur-local-ai" : ""}" title="${selectedSoftware.name} changelog" loading="lazy"></iframe></aside>`
+      document.title = selectedSoftware.name + " | Micrase's softwares";
+      var initialPlatform = selectedSoftware.platforms[0];
+      var platforms = ["Android", "Linux", "macOS", "Windows"];
+      var initialTabIndex = platforms.indexOf(initialPlatform);
+      var changelogPanel = requestedSoftware === "micrase-assault" || requestedSoftware === "ur-local-ai"
+        ? '<aside class="changelog-panel" aria-labelledby="changelog-heading"><h2 id="changelog-heading">Changelog</h2><iframe class="changelog-viewer" src="changelog-viewer.html' + (requestedSoftware === "ur-local-ai" ? "?software=ur-local-ai" : "") + '" title="' + escapeHtml(selectedSoftware.name) + ' changelog"></iframe></aside>'
         : "";
-      detail.innerHTML = `
-        <div class="software-detail-layout">
-          <div class="detail-column">
-            <a class="back-link" href="index.html">&larr; All software</a>
-            <section class="detail-panel" aria-labelledby="software-name">
-              <div class="detail-heading">
-                <img class="software-icon app-icon" src="${selectedSoftware.icon}" alt="" aria-hidden="true">
-                <div><h1 id="software-name">${selectedSoftware.name}</h1><p>Choose a platform</p></div>
-              </div>
-              <div class="platform-tabs" role="tablist" aria-label="Available platforms">
-                ${["Android", "Linux", "macOS", "Windows"].map((platform, index) => `<button class="platform-tab" id="tab-${index}" type="button" role="tab" aria-selected="${platform === initialPlatform}" aria-controls="platform-content" tabindex="${platform === initialPlatform ? 0 : -1}" data-platform="${platform}">${platform}</button>`).join("")}
-              </div>
-              <div class="platform-content" id="platform-content" role="tabpanel" aria-labelledby="tab-${["Android", "Linux", "macOS", "Windows"].indexOf(initialPlatform)}"></div>
-            </section>
-          </div>
-          ${changelogPanel}
-        </div>`;
-      const detailColumn = detail.querySelector(".detail-column");
+      var tabMarkup = "";
+      for (var platformIndex = 0; platformIndex < platforms.length; platformIndex += 1) {
+        tabMarkup += '<button class="platform-tab" id="tab-' + platformIndex + '" type="button" role="tab" aria-selected="' + (platforms[platformIndex] === initialPlatform) + '" aria-controls="platform-content" tabindex="' + (platforms[platformIndex] === initialPlatform ? "0" : "-1") + '" data-platform="' + platforms[platformIndex] + '">' + platforms[platformIndex] + "</button>";
+      }
+      detail.innerHTML = '<div class="software-detail-layout"><div class="detail-column">' +
+        '<a class="back-link" href="index.html">&larr; All software</a>' +
+        '<section class="detail-panel" aria-labelledby="software-name">' +
+        '<div class="detail-heading"><img class="software-icon app-icon" src="' + escapeHtml(selectedSoftware.icon) + '" alt="" aria-hidden="true">' +
+        '<div><h1 id="software-name">' + escapeHtml(selectedSoftware.name) + '</h1><p>Choose a platform</p></div></div>' +
+        '<div class="platform-tabs" role="tablist" aria-label="Available platforms">' + tabMarkup + "</div>" +
+        '<div class="platform-content" id="platform-content" role="tabpanel" aria-labelledby="tab-' + initialTabIndex + '"></div>' +
+        "</section></div>" + changelogPanel + "</div>";
+      var detailColumn = detail.querySelector(".detail-column");
       if (selectedSoftware.systemRequirements) {
-        detailColumn.insertAdjacentHTML("beforeend", `
-          <section class="detail-panel system-requirements" aria-labelledby="requirements-heading">
-            <h2 id="requirements-heading">System requirements</h2>
-            <div id="requirements-content" aria-live="polite"></div>
-          </section>`);
+        detailColumn.insertAdjacentHTML("beforeend", '<section class="detail-panel system-requirements" aria-labelledby="requirements-heading"><h2 id="requirements-heading">System requirements</h2><div id="requirements-content" aria-live="polite"></div></section>');
       }
 
-      const tabs = [...detail.querySelectorAll("[role='tab']")];
-      const content = detail.querySelector("[role='tabpanel']");
-      const requirementsContent = detail.querySelector("#requirements-content");
+      var tabs = detail.querySelectorAll("[role='tab']");
+      var content = detail.querySelector("[role='tabpanel']");
+      var requirementsContent = detail.querySelector("#requirements-content");
+
+      function createLegacyDropdown(label, legacyReleases) {
+        var links = "";
+        for (var releaseIndex = 0; releaseIndex < legacyReleases.length; releaseIndex += 1) {
+          links += '<a href="' + escapeHtml(legacyReleases[releaseIndex].url) + '">' + escapeHtml(legacyReleases[releaseIndex].label) + "</a>";
+        }
+        var summary = label ? "Legacy releases · " + escapeHtml(label) : "Legacy releases";
+        return '<details class="legacy-dropdown"><summary>' + summary + '</summary><div class="legacy-options">' + (links || '<span class="legacy-empty">No legacy releases available.</span>') + "</div></details>";
+      }
 
       function selectPlatform(tab) {
-        const platform = tab.dataset.platform;
-        const available = selectedSoftware.platforms.includes(platform);
-        const comingSoon = selectedSoftware.comingSoon?.includes(platform);
-        const releases = selectedSoftware.downloads?.[platform];
-        tabs.forEach(item => {
-          const active = item === tab;
+        var platform = tab.getAttribute("data-platform");
+        var available = selectedSoftware.platforms.indexOf(platform) !== -1;
+        var comingSoon = selectedSoftware.comingSoon && selectedSoftware.comingSoon.indexOf(platform) !== -1;
+        var releases = selectedSoftware.downloads && selectedSoftware.downloads[platform];
+        for (var tabIndex = 0; tabIndex < tabs.length; tabIndex += 1) {
+          var item = tabs[tabIndex];
+          var active = item === tab;
           item.setAttribute("aria-selected", String(active));
           item.tabIndex = active ? 0 : -1;
-        });
+        }
         content.setAttribute("aria-labelledby", tab.id);
         if (requirementsContent) {
-          const requirements = selectedSoftware.systemRequirements[platform];
-          requirementsContent.innerHTML = requirements
-            ? requirements.architectures
-              ? requirements.architectures.map(architecture => `<h3>${architecture.label}</h3><ul>${architecture.items.map(item => `<li>${item}</li>`).join("")}</ul>`).join("")
-              : `<h3>${platform}</h3>${requirements.note ? `<p class="requirements-note">${requirements.note}</p>` : ""}<ul>${requirements.items.map(item => `<li>${item}</li>`).join("")}</ul>`
-            : `<h3>${platform}</h3><p>System requirements have not been published. Micrase's Assault is not currently available for Android.</p>`;
+          var requirements = selectedSoftware.systemRequirements[platform];
+          var requirementsMarkup = "";
+          if (requirements) {
+            if (requirements.architectures) {
+              for (var architectureIndex = 0; architectureIndex < requirements.architectures.length; architectureIndex += 1) {
+                var architecture = requirements.architectures[architectureIndex];
+                requirementsMarkup += "<h3>" + escapeHtml(architecture.label) + "</h3><ul>";
+                for (var architectureItemIndex = 0; architectureItemIndex < architecture.items.length; architectureItemIndex += 1) {
+                  requirementsMarkup += "<li>" + escapeHtml(architecture.items[architectureItemIndex]) + "</li>";
+                }
+                requirementsMarkup += "</ul>";
+              }
+            } else {
+              requirementsMarkup = "<h3>" + escapeHtml(platform) + "</h3>" +
+                (requirements.note ? '<p class="requirements-note">' + escapeHtml(requirements.note) + "</p>" : "") + "<ul>";
+              for (var requirementIndex = 0; requirementIndex < requirements.items.length; requirementIndex += 1) {
+                requirementsMarkup += "<li>" + escapeHtml(requirements.items[requirementIndex]) + "</li>";
+              }
+              requirementsMarkup += "</ul>";
+            }
+          } else {
+            requirementsMarkup = "<h3>" + escapeHtml(platform) + "</h3><p>System requirements have not been published. Micrase's Assault is not currently available for Android.</p>";
+          }
+          requirementsContent.innerHTML = requirementsMarkup;
         }
         if (available && releases) {
-          const createLegacyDropdown = (label, legacyReleases) => `<details class="legacy-dropdown"><summary>${label ? `Legacy releases · ${label}` : "Legacy releases"}</summary><div class="legacy-options">${legacyReleases.length ? legacyReleases.map(release => `<a href="${release.url}">${release.label}</a>`).join("") : '<span class="legacy-empty">No legacy releases available.</span>'}</div></details>`;
-          const legacyLinks = platform === "Linux"
-            ? createLegacyDropdown("AppImage x86_64", releases.legacy || [])
-            : releases.legacy?.length
-              ? createLegacyDropdown("", releases.legacy)
-              : "";
-          const releaseNote = releases.note ? `<p class="release-note">${releases.note}</p>` : "";
-          const arm64InfoLink = platform === "Linux"
+          var legacyReleases = releases.legacy || [];
+          var legacyLinks = platform === "Linux"
+            ? createLegacyDropdown("AppImage x86_64", legacyReleases)
+            : legacyReleases.length ? createLegacyDropdown("", legacyReleases) : "";
+          var releaseNote = releases.note ? '<p class="release-note">' + escapeHtml(releases.note) + "</p>" : "";
+          var arm64InfoLink = platform === "Linux"
             ? '<button class="download-link" type="button" data-arm64-info>Linux ARM64 compatibility</button>'
             : "";
-          const directxInstallerLink = releases.directxInstaller
-            ? `<a class="download-link" href="${releases.directxInstaller.url}">${releases.directxInstaller.label}</a>`
+          var directxInstallerLink = releases.directxInstaller
+            ? '<a class="download-link" href="' + escapeHtml(releases.directxInstaller.url) + '">' + escapeHtml(releases.directxInstaller.label) + "</a>"
             : "";
-          content.innerHTML = `<h2>Available for ${platform}</h2>${releaseNote}<div class="download-actions"><a class="download-link" href="${releases.latest.url}">Download latest · ${releases.latest.label}</a>${directxInstallerLink}${arm64InfoLink}${legacyLinks}</div>`;
-          const arm64InfoButton = content.querySelector("[data-arm64-info]");
+          content.innerHTML = "<h2>Available for " + escapeHtml(platform) + "</h2>" + releaseNote +
+            '<div class="download-actions"><a class="download-link" href="' + escapeHtml(releases.latest.url) + '">Download latest · ' +
+            escapeHtml(releases.latest.label) + "</a>" + directxInstallerLink + arm64InfoLink + legacyLinks + "</div>";
+          var arm64InfoButton = content.querySelector("[data-arm64-info]");
           if (arm64InfoButton) {
-            arm64InfoButton.addEventListener("click", () => document.querySelector("#arm64-notice").showModal());
+            arm64InfoButton.addEventListener("click", function () {
+              showNotice(document.querySelector("#arm64-notice"));
+            });
           }
         } else {
           content.innerHTML = available
-            ? `<h2>Available for ${platform}</h2><p>Downloads for this platform have not been added yet.</p>`
-            : `<h2>${comingSoon ? `${platform} support coming soon` : `Not available for ${platform}`}</h2><p>${comingSoon ? `Support for ${platform} is coming soon.` : `${selectedSoftware.name} is not currently available for ${platform}.`}</p>`;
+            ? "<h2>Available for " + escapeHtml(platform) + "</h2><p>Downloads for this platform have not been added yet.</p>"
+            : "<h2>" + (comingSoon ? escapeHtml(platform) + " support coming soon" : "Not available for " + escapeHtml(platform)) +
+              "</h2><p>" + (comingSoon ? "Support for " + escapeHtml(platform) + " is coming soon." :
+              escapeHtml(selectedSoftware.name) + " is not currently available for " + escapeHtml(platform) + ".") + "</p>";
         }
       }
 
-      tabs.forEach((tab, index) => {
-        tab.addEventListener("click", () => selectPlatform(tab));
-        tab.addEventListener("keydown", event => {
-          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-          event.preventDefault();
-          const direction = event.key === "ArrowRight" ? 1 : -1;
-          const nextTab = tabs[(index + direction + tabs.length) % tabs.length];
-          nextTab.focus();
-          selectPlatform(nextTab);
-        });
-      });
-      selectPlatform(tabs.find(tab => tab.dataset.platform === initialPlatform));
+      for (var eventTabIndex = 0; eventTabIndex < tabs.length; eventTabIndex += 1) {
+        (function (tab, index) {
+          tab.addEventListener("click", function () { selectPlatform(tab); });
+          tab.addEventListener("keydown", function (event) {
+            var key = event.key || (event.keyCode === 37 ? "ArrowLeft" : event.keyCode === 39 ? "ArrowRight" : "");
+            if (key !== "ArrowLeft" && key !== "ArrowRight") return;
+            event.preventDefault();
+            var direction = key === "ArrowRight" ? 1 : -1;
+            var nextTab = tabs[(index + direction + tabs.length) % tabs.length];
+            nextTab.focus();
+            selectPlatform(nextTab);
+          });
+        })(tabs[eventTabIndex], eventTabIndex);
+      }
+      selectPlatform(tabs[initialTabIndex]);
     }
+
+    var closeNoticeButtons = document.querySelectorAll("[data-close-notice]");
+    for (var closeIndex = 0; closeIndex < closeNoticeButtons.length; closeIndex += 1) {
+      closeNoticeButtons[closeIndex].addEventListener("click", function () {
+        hideNotice(this.parentNode.parentNode);
+      });
+    }
+    document.addEventListener("keydown", function (event) {
+      var notice = document.querySelector(".download-notice.is-open");
+      if (!notice) return;
+      var keyCode = event.keyCode || event.which;
+      if (keyCode === 27) {
+        notice.querySelector("[data-close-notice]").click();
+      } else if (keyCode === 9) {
+        var focusable = notice.querySelectorAll("button, a[href], iframe, [tabindex]");
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
   </script>
 </body>
 </html>
