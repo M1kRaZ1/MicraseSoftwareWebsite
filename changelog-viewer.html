@@ -20,6 +20,18 @@
   <div id="changelog-content"><p>Loading changelog…</p></div>
   <script>
     const content = document.querySelector("#changelog-content");
+    const changelogs = {
+      "micrase-assault": {
+        file: "Changelog%20micrase%20assault.rtf",
+        title: "Micrase's Assault"
+      },
+      "ur-local-ai": {
+        file: "Changelog%20ur%20local%20ai.rtf",
+        title: "Your Local AI"
+      }
+    };
+    const requestedSoftware = new URLSearchParams(window.location.search).get("software") || "micrase-assault";
+    const changelog = changelogs[requestedSoftware];
 
     function decodeHexEscapes(value) {
       const bytes = [];
@@ -44,6 +56,7 @@
       const contentStart = rtf.indexOf("\\cf0") + 5;
       const body = rtf.slice(contentStart).replace(/}\s*$/, "");
       return decodeHexEscapes(body)
+        .replace(/\\par[d]?/gi, "\n")
         .replace(/\\\r?\n/g, "\n")
         .replace(/\\[a-z]+\d* ?/gi, "")
         .replace(/[{}]/g, "")
@@ -56,7 +69,7 @@
       content.replaceChildren();
       let list;
       lines.forEach(line => {
-        if (/^Alpha /.test(line)) {
+        if (/^(Alpha|Version) /.test(line)) {
           list = null;
           const heading = document.createElement("h2");
           heading.textContent = line.replace(/;$/, "");
@@ -67,7 +80,19 @@
             content.append(list);
           }
           const item = document.createElement("li");
-          item.textContent = line.slice(2);
+          const text = line.slice(2);
+          const urlPattern = /https?:\/\/[^\s)]+/g;
+          let previousIndex = 0;
+          for (const match of text.matchAll(urlPattern)) {
+            item.append(document.createTextNode(text.slice(previousIndex, match.index)));
+            const link = document.createElement("a");
+            link.href = match[0];
+            link.textContent = match[0];
+            link.rel = "noopener noreferrer";
+            item.append(link);
+            previousIndex = match.index + match[0].length;
+          }
+          item.append(document.createTextNode(text.slice(previousIndex)));
           list.append(item);
         } else if (line.includes("Changelog")) {
           const heading = document.createElement("h1");
@@ -77,7 +102,11 @@
       });
     }
 
-    fetch("Changelog%20micrase%20assault.rtf")
+    if (!changelog) {
+      content.innerHTML = '<p class="error">The changelog could not be loaded.</p>';
+    } else {
+      document.title = `${changelog.title} changelog`;
+      fetch(changelog.file)
       .then(response => {
         if (!response.ok) throw new Error("Unable to load the RTF file.");
         return response.text();
@@ -86,6 +115,7 @@
       .catch(() => {
         content.innerHTML = '<p class="error">The changelog could not be loaded.</p>';
       });
+    }
   </script>
 </body>
 </html>

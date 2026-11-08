@@ -207,6 +207,26 @@
             }]
           }
         }
+      },
+       "ur-local-ai": {
+        name: "Your Local AI",
+        icon: "softicon_urlocalai.webp",
+        platforms: ["Android"],
+        downloads: {
+          Android: {
+            latest: {
+              label: "Version 1.1 (APK)",
+              url: "https://github.com/M1kRaZ1/YourLocalAI/releases/download/release-1-1/RELEASE-ur-local-ai.apk"
+            },
+            legacy: [{
+              label: "Version 1.0.1 (APK)",
+              url: "https://github.com/M1kRaZ1/YourLocalAI/releases/download/release-1-0-1/RELEASE-ur-local-ai.apk"
+            }, {
+              label: "Version 1.0 (APK)",
+              url: "https://github.com/M1kRaZ1/YourLocalAI/releases/download/release-1-0/release-ur-local-ai.apk"
+            }]
+          }
+        }
       }
     };
 
@@ -220,8 +240,8 @@
     } else {
       document.title = `${selectedSoftware.name} | Micrase's softwares`;
       const initialPlatform = selectedSoftware.platforms[0];
-      const changelogPanel = requestedSoftware === "micrase-assault"
-        ? '<aside class="changelog-panel" aria-labelledby="changelog-heading"><h2 id="changelog-heading">Changelog</h2><iframe class="changelog-viewer" src="changelog-viewer.html" title="Micrase\'s Assault changelog" loading="lazy"></iframe></aside>'
+      const changelogPanel = ["micrase-assault", "ur-local-ai"].includes(requestedSoftware)
+        ? `<aside class="changelog-panel" aria-labelledby="changelog-heading"><h2 id="changelog-heading">Changelog</h2><iframe class="changelog-viewer" src="changelog-viewer.html${requestedSoftware === "ur-local-ai" ? "?software=ur-local-ai" : ""}" title="${selectedSoftware.name} changelog" loading="lazy"></iframe></aside>`
         : "";
       detail.innerHTML = `
         <div class="software-detail-layout">
