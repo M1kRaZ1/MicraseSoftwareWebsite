@@ -20,7 +20,7 @@
 
   <div class="download-notice" id="arm64-notice" role="dialog" aria-modal="true" aria-labelledby="arm64-notice-title" aria-hidden="true">
     <h2 id="arm64-notice-title">Linux ARM64 compatibility</h2>
-    <iframe title="Linux ARM64 compatibility notice" srcdoc="&lt;p&gt;for Linux ARM64 users: You must use a translation layer to run the x86_64 (amd64) build on your device.&lt;/p&gt;"></iframe>
+    <iframe title="Linux ARM64 compatibility notice" srcdoc="&lt;p&gt;for Linux ARM64 users: a translation layer must be used to run the x86_64 (amd64) build on your PC.&lt;/p&gt;"></iframe>
     <div class="notice-actions"><button type="button" data-close-notice>Close</button></div>
   </div>
 
@@ -29,7 +29,7 @@
       "micrase-assault": {
         name: "Micrase's Assault",
         icon: "softicon_Micrase_Assault_game.png",
-        platforms: ["Linux", "macOS", "Windows"],
+        platforms: ["Linux", "macOS", "Windows", "Android"],
         systemRequirements: {
           Linux: {
             architectures: [{
@@ -37,7 +37,7 @@
               items: [
                 "Operating system: a modern 64-bit Linux distribution.",
                 "Processor: a 64-bit x86 CPU that supports x86-64-v2. Not every 64-bit processor meets this requirement.",
-                "Graphics: a graphics card or chip that supports OpenGL 2.0 and/or Vulkan."
+                "Graphics: a graphics card or chip that supports OpenGL 2.1 and/or Vulkan 1.0."
               ]
             }]
           },
@@ -45,14 +45,22 @@
             items: [
               "Operating system: macOS 12 Monterey or later.",
               "Processor: an Intel processor or an Apple M-series chip.",
-              "Graphics: a graphics card or chip that supports OpenGL 2.0 and Metal 1 graphics."
+              "Graphics: a graphics card or chip that supports OpenGL 2.1 and Metal 1 graphics."
             ]
           },
           Windows: {
             items: [
               "Operating system: Windows 7 x32 or later.",
               "Processor: a 32-bit x86 CPU that supports AVX. Not every 32-bit processor meets this requirement.",
-              "Graphics: a graphics card or chip that supports OpenGL 2.0 and/or Direct3D 9."
+              "Graphics: a graphics card or chip that supports OpenGL 2.1 and/or Direct3D 9."
+            ]
+          },
+          Android: {
+            items: [
+              "Operating system: Android 12 or later.",
+              "Processor: 64 bit android devices.",
+              "Graphics: a device that supports OpenGL ES 2.1 and/or Vulkan 1.0.",
+              "Input devices: Keyboard and mouse are required, as touch controls are not supported for the moment."
             ]
           }
         },
@@ -134,6 +142,13 @@
               label: "Alpha 0.3.1 (ZIP)",
               url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/Micrases-assault_ALPHA-0.3.1.zip"
             }]
+          },
+          Android: {
+            note: "Alpha release: expect game-breaking bugs and glitches.",
+            latest: {
+              label: "Alpha 0.4.0 (APK)",
+              url: "https://github.com/M1kRaZ1/MicraseSoftwareWebsite/releases/download/soft1/MicAssault_ALPHA-0.4.0.apk"
+            }
           }
         }
       },
@@ -352,7 +367,7 @@
         if (available && releases) {
           var legacyReleases = releases.legacy || [];
           var legacyLinks = platform === "Linux"
-            ? createLegacyDropdown("AppImage x86_64", legacyReleases)
+            ? createLegacyDropdown("", legacyReleases)
             : legacyReleases.length ? createLegacyDropdown("", legacyReleases) : "";
           var releaseNote = releases.note ? '<p class="release-note">' + escapeHtml(releases.note) + "</p>" : "";
           var arm64InfoLink = platform === "Linux"
